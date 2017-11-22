@@ -6,7 +6,7 @@ app.use(bodyParser.json());
 mongoose.connect('mongodb://localhost/Person')
 var db=mongoose.connection;
 var user=require('./sehema')
-
+var user1=require('./app')
 app.get('/',function(req,res){
 user.getuser(function(req,user){
     if(err){
@@ -17,5 +17,6 @@ user.getuser(function(req,user){
     }
 })
 })
+app.get('/',user1)
 app.listen(8000);
 console.log('hello')
