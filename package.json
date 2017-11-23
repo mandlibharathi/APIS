@@ -1,21 +1,28 @@
 {
-  "name": "gcr",
+  "name": "repo",
   "version": "1.0.0",
   "description": "",
-  "main": ".mongorc.js",
+  "main": "app.js",
   "dependencies": {
-    "assert": "^1.4.1",
     "body-parser": "^1.18.2",
-    "connect": "^3.6.5",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
     "mongodb": "^2.2.33",
-    "mongoose": "^4.13.2",
+    "mongoose": "^4.13.4"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mandlibharathi/APIS.git"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mandlibharathi/APIS/issues"
+  },
+  "homepage": "https://github.com/mandlibharathi/APIS#readme"
 }
