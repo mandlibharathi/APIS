@@ -1,17 +1,19 @@
 var mongoose=require('mongoose');
 var userschema=mongoose.Schema({
     id:{
-        type:Number,
+        type:Object,
         required:true
     },
    phone:{
         type:Number,
-        required:true
+        required:true,
+        unique:true
 
     },
    email:{
         type:Number,
-        required:true
+        required:true,
+        unique:true
     },
    role:{
         type:String,
@@ -24,9 +26,19 @@ var userschema=mongoose.Schema({
     lastname:{
         type:String,
         required:true
+    },
+    countryCode:{
+        type:String
+    },
+    timestamps:{
+createdAt:"",
+updatedAt:""
     }
 
+    
+
 })
+console.log(userschema)
 var user=mongoose.model('user',userschema)
 module.exports.getuser=function(){
 };
