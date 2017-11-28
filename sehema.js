@@ -1,7 +1,7 @@
 var mongoose=require('mongoose');
 var userschema=mongoose.Schema({
     id:{
-        type:Object,
+        type:Number,
         required:true
     },
    phone:{
@@ -31,14 +31,13 @@ var userschema=mongoose.Schema({
         type:String
     },
     timestamps:{
-createdAt:"",
-updatedAt:""
+createdAt:Date,
+updatedAt:Date
     }
 
     
 
 })
 console.log(userschema)
-var user=mongoose.model('user',userschema)
-module.exports.getuser=function(){
-};
+var user=mongoose.model('user',userschema);
+module.exports=user;
