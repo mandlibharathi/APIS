@@ -8,21 +8,17 @@ app.use(bodyParser.json());
 mongoose.connect(db);
 var User=require('./schema')
 app.get('/signup',function(req,res){
-   MongoClient.connect(db,function(err,db){
-       if(err){
-           console.log(err)
-       }
-        
-       db.collection('User').find({}).toArray(function(err,result){
-           if(err){
-               res.send('error')
-           }
-           else{
-               res.json(result)
-           }
-       })
-   })
-       
+    User.find({}).exec(function(err,result){
+        if(err){
+            console.log(err)
+        }
+        else{
+            res.json(results)
+        }
+    
+    })
 })
+       
+
 app.listen(8000);
 console.log('test localhost')
