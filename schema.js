@@ -1,5 +1,5 @@
 var mongoose=require('mongoose');
-var UserSchema=mongoose.Schema({
+var userSchema=mongoose.Schema({
     id:{
         type:Object,
     },
@@ -28,11 +28,14 @@ var UserSchema=mongoose.Schema({
     countryCode:{
         type:Number
     },
-   time:{
-       type:Date,
-       default:Date.now
-   }
+    created_At:Date,
+    updated_At:Date,
+    create_date:{
+        type:Date,
+        default:Date.now
+    }
     
 
 })
-module.exports=mongoose.model('User',UserSchema)
+var user=mongoose.model('User',userSchema);
+module.exports=user;
