@@ -11,6 +11,7 @@ db.collection('User').find({}).toArray(function(err,result){
     else{
         res.json(result)
     }
+
 })
 })
 module.exports=router;
