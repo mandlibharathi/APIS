@@ -37,5 +37,4 @@ var userSchema=mongoose.Schema({
     
 
 })
-var user=mongoose.model('User',userSchema);
-module.exports=user;
+module.exports=mongoose.model('User',userSchema);
