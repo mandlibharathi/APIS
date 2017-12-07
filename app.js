@@ -6,7 +6,6 @@ mongoose.connect('mongodb://localhost/Person');
 var db=mongoose.connection;
 app.use(bodyParser.json());
 var user=require('./router');
-app.set('view engine','pug')
 app.use('/api',user);
 
 
