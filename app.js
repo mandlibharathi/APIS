@@ -5,6 +5,7 @@ var mongoose=require('mongoose');
 mongoose.connect('mongodb://localhost/Person');
 var db=mongoose.connection;
 app.use(bodyParser.json());
+
 var user=require('./router');
 app.use('/api',user);
 
