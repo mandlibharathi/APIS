@@ -13,8 +13,12 @@ var userSchema=new Schema({
         type:String,
         required:true
     },
+    password:{
+        type:String,
+        required:true
+    },
     role:{
-type:String
+    type:String
     },
     firstname:{
         type:String
@@ -24,6 +28,10 @@ type:String
     },
     countryCode:{
         type:Number
+    },
+    timestamps:{
+        created_At:Date,
+        Updated_At:Date
     }
    
 })
