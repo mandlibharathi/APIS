@@ -10,7 +10,6 @@ router.get('/signup',function(req,res){
             res.json(result)
         }
     })
-    
 })
 router.post('/signup',function(req,res){
     var id=req.body.id;
@@ -20,23 +19,33 @@ router.post('/signup',function(req,res){
     var firstname=req.body.firstname;
     var lastname=req.body.lastname;
     var countryCode=req.body.countryCode;
-    var user1=new user()
-    user1.id=id;
-    user1.phone=phone;
-    user1.email=email;
-    user1.firstname=firstname;
-    user1.lastname=lastname;
-    user1.countryCode=countryCode;
-    user1.save(function(err,savedUser){
+    var newuser=new user();
+    newuser.id=id;
+    newuser.phone=phone;
+    newuser.email=email;
+    newuser.role=role;  
+    newuser.firstname=firstname;
+    newuser.lastname=lastname;
+    newuser.countryCode=countryCode;
+    user.findOne({$or:[{'phone':phone},{'email':email}]},function(err,user){
         if(err){
-            console.log(err);
-            return res.status(500).send()
-
+        res.send(err)
         }
-        else{
-res.status(200).send(savedUser)
+        if(user){
+            res.json({msg:'email / phone already taken'})
+        }
+        else {
+            newuser.save(function(err,savedfile){
+                if(err){
+                    res.staus(500).send()
+                }
+                else{
+                    res.status(200).send(savedfile)
+                }
+            })
         }
     })
+
 })
 
-    module.exports=router;
+ module.exports=router;                                                                                                                                               
