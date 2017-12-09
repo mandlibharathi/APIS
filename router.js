@@ -28,12 +28,9 @@ router.post('/login',function(req,res){
                 res.json({sucess:false,msg:'wrong pasword'})
             }
             else{
-            
-                  res.json({
-                    success: true,
-                    message: 'sucessfully loggedin!',
-                    
-                  });
+                var secret='supersecret';
+           var token=jwt.sign({id:user._id},secret) 
+        res.status(200).send({auth:true,token:token})
             }
         }
         
