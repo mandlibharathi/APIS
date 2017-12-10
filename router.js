@@ -105,13 +105,20 @@ router.post('/signup',function(req,res){
         }
         else { 
             
-
+var name={
+    id:4,
+    type:"user",
+    attributes:{
+        firstname:'manju',
+        lastname:'mandli'
+    }
+}
             newUser.save(function(err,name){
                 if(err){
                     res.status(500).send()
                 }
                 else{
-                    res.status(201).send(name)
+                    res.status(201).send(res.json(name))
                 }
             })
         }
