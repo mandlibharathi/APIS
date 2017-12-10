@@ -2,6 +2,7 @@ var express=require('express');
 var router=express.Router();
 var User=require('./schema');
 var jwt=require('jsonwebtoken');
+var bcrypt=require('bcryptjs');
 router.get('/authndication',verifyToken,function(req,res){
         User.findById(req.userid, { password: 0 }, function (err, user) {
  if (err) return res.status(500).send("There was a problem finding the user.");
@@ -46,15 +47,23 @@ router.post('/login',function(req,res){
             if(user.password!=req.body.password){
                 res.json({sucess:false,msg:'wrong pasword'})
             }
-            else{
-               
-           var token=jwt.sign({id:user._id},'secret') 
-        res.status(200).send({auth:true,token:token})
-            }
-        }
         
+        
+        
+                var passwordIsValid = bcrypt.compare(req.body.password, user.password) 
+           var token=jwt.sign({id:user._id},'secret') 
+           if(!passwordIsValid){
+               res.status(401).send({sucess:false,token:null})
+           }
+        res.status(200).send({auth:true,token:token})
+            
+        
+        }
+    
     })
-})
+}) 
+    
+
 function verifyToken(req, res, next) {
     var token = req.headers['x-access-token'];
     if (!token)
@@ -94,13 +103,15 @@ router.post('/signup',function(req,res){
         if(user){
             res.json({msg:'email / phone already taken'})
         }
-        else {
-            newUser.save(function(err,savedfile){
+        else { 
+            
+
+            newUser.save(function(err,name){
                 if(err){
                     res.status(500).send()
                 }
                 else{
-                    res.status(200).send(savedfile)
+                    res.status(201).send(name)
                 }
             })
         }
