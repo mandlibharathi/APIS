@@ -33,7 +33,7 @@ router.get('/authndication',verifyToken,function(req,res){
     
 
 router.post('/login',function(req,res){
-     var phone=req.body.phone;
+    var phone=req.body.phone;
     var email=req.body.email;
     var password=req.body.password;
     User.findOne({$or:[{'phone':phone},{'email':email}]},function(err,user){
@@ -43,14 +43,8 @@ router.post('/login',function(req,res){
         if(!user){
             res.json({sucess:false,msg:"user cannot find"})
         }
-        else if(user){
-            if(user.password!=req.body.password){
-                res.json({sucess:false,msg:'wrong pasword'})
-            }
         
-        
-        
-                var passwordIsValid = bcrypt.compare(req.body.password, user.password) 
+        var passwordIsValid = bcrypt.compareSync( req.body.password,user.password) 
            var token=jwt.sign({id:user._id},'secret') 
            if(!passwordIsValid){
                res.status(401).send({sucess:false,token:null})
@@ -58,7 +52,7 @@ router.post('/login',function(req,res){
         res.status(200).send({auth:true,token:token})
             
         
-        }
+    
     
     })
 }) 
@@ -79,10 +73,11 @@ function verifyToken(req, res, next) {
 
 
 router.post('/signup',function(req,res){
+    var hashedPassword = bcrypt.hashSync(req.body.password)
     var id=req.body.id;
     var phone=req.body.phone;
     var email=req.body.email;
-    var password=req.body.password;
+    var password=hashedPassword;
     var role=req.body.role;
     var firstname=req.body.firstname;
      var lastname=req.body.lastname;
@@ -91,7 +86,7 @@ router.post('/signup',function(req,res){
     newUser.id=id;
     newUser.phone=phone;
     newUser.email=email;
-    newUser.password=password;
+    newUser.password=hashedPassword;
     newUser.role=role;  
     newUser.firstname=firstname;
     newUser.lastname=lastname;
@@ -105,26 +100,20 @@ router.post('/signup',function(req,res){
         }
         else { 
             
-var name={
-    id:4,
-    type:"user",
-    attributes:{
-        firstname:'manju',
-        lastname:'mandli'
-    }
-}
-            newUser.save(function(err,name){
+
+            newUser.save(function(err,savedfile){
                 if(err){
-                    res.status(500).send()
+                    res.status(404).send()
                 }
                 else{
-                    res.status(201).send(res.json(name))
+                    res.status(201).send(res.json(savedfile))
                 }
             })
         }
     })
 
 })
+
    
 
 
