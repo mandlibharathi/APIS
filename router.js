@@ -3,7 +3,8 @@ var router=express.Router();
 var User=require('./schema');
 var jwt=require('jsonwebtoken');
 var bcrypt=require('bcryptjs');
-router.get('/authndication',verifyToken,function(req,res){
+var verifyToken=require('./models/token');
+router.get('/authendication',verifyToken,function(req,res){
         User.findById(req.userid, { password: 0 }, function (err, user) {
  if (err) return res.status(500).send("There was a problem finding the user.");
  if (!user) return res.status(404).send("No user found.");
@@ -58,18 +59,7 @@ router.post('/login',function(req,res){
 }) 
     
 
-function verifyToken(req, res, next) {
-    var token = req.headers['x-access-token'];
-    if (!token)
-      return res.status(403).send({ auth: false, message: 'No token provided.' });
-    jwt.verify(token, 'secret', function(err, decoded) {
-      if (err)
-      return res.status(500).send({ auth: false, message: 'Failed to authenticate token.' });
-      // if everything good, save to request for use in other routes
-      req.userid = decoded.id;
-      next();
-})
-  }
+
 
 
 router.post('/signup',function(req,res){
@@ -98,15 +88,13 @@ router.post('/signup',function(req,res){
         if(user){
             res.json({msg:'email / phone already taken'})
         }
-        else { 
-            
-
+else{
             newUser.save(function(err,savedfile){
                 if(err){
                     res.status(404).send()
                 }
                 else{
-                    res.status(201).send(res.json(savedfile))
+                    res.status(201).send(savedfile)
                 }
             })
         }
