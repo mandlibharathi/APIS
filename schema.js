@@ -32,6 +32,12 @@ var userSchema=new Schema({
     timestamps:{
         created_At:Date,
         Updated_At:Date
+    },
+    facebook:{
+        id:String,
+        token:String,
+        email:String,
+        name:String
     }
    
 })
