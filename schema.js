@@ -1,7 +1,7 @@
 var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
 var userSchema=new Schema({
-    id:{
+   id:{
         type:Number
 
     },
@@ -36,10 +36,11 @@ var userSchema=new Schema({
     facebook:{
         id:String,
         token:String,
-        name:String,
-        email:String
+        email:String,
+        name:String
         
     }
     
 })
+
 module.exports=mongoose.model('User',userSchema)
