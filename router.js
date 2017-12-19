@@ -1,13 +1,11 @@
 var express=require('express');
 var router=express.Router();
-var User=require('./schema');
 var jwt=require('jsonwebtoken');
 var bcrypt=require('bcryptjs');
 var passport=require('passport');
-var configAuth=require('./models/auth')
-var FacebookStrategy=require('passport-facebook').Strategy;
-var verifyToken=require('./models/token');
-router.get('/authendication',verifyToken,function(req,res){
+var facebook=require('./models/passport')
+var verifytoken=require('./models/token');
+router.get('/authendication',verifytoken,function(req,res){
         User.findById(req.userid, { password: 0 }, function (err, user) {
  if (err) return res.status(500).send("There was a problem finding the user.");
  if (!user) return res.status(404).send("No user found.");
@@ -16,7 +14,7 @@ router.get('/authendication',verifyToken,function(req,res){
            }
           });
     })
-    router.put('/update',verifyToken,function(req,res){
+    router.put('/update',verifytoken,function(req,res){
         var firstname=req.body.firstname;
         var lastname=req.body.lastname;
         User.findByIdAndUpdate(req.userid,{firstname:firstname,lastname:lastname},function(err,user){
@@ -45,6 +43,7 @@ router.post('/login',function(req,res){
         if(err){
             res.send(err)
         }
+        
         if(!user){
             res.json({sucess:false,msg:"user cannot find"})
         }
@@ -59,45 +58,25 @@ router.post('/login',function(req,res){
     })
 }) 
 
-passport.use(new FacebookStrategy({
-    clientID:configAuth.facebookAuth.clientID,
-    clientSecret:configAuth.facebookAuth.clientSecret,
-    callbackURL:configAuth.facebookAuth.callbackURL
-},
-function(accessToken,verifyToken,profile,cb){
-   process.nextTick(function(){
-       User.findOne({'facebook.id':profile.id},function(err,user){
-           if(err){
-               return cb(err)
-           }
-           if(user){
-               return cb(null,user)
-           }
-           else{
-            var newUser = new User();
-            newUser.facebook.id    = profile.id;
-            newUser.facebook.token = accessToken;
-            newUser.facebook.name= profile.name.givenName + ' ' + profile.name.familyName;
-            newUser.facebook.email=profile.email;
-            newUser.save(function(err) {
-                if (err)
-                    throw err;
-                return cb(null, newUser);
-            });            
-           }
-       })
-   })
-}
+router.get('/login',verifytoken,function(req,res){
+User.findById(req.userid,function(err,user){
+    if(err){
+        throw err
+    }
+    else{
+        res.send(user)
+    }
+})
+})
+  
+router.get('/auth/facebook',passport.authenticate('facebook',{scope:['public_profile', 'email']}))
+router.get('/auth/facebook/callback',passport.authenticate('facebook',{successRedirect : '/profile',
+failureRedirect : '/'}))
 
 
-))          
-
-
-router.get('/auth/facebook',passport.authenticate('facebook',{scope:['public_profile','email']}))
-router.get('/auth/facebook/callback',passport.authenticate('facebook',{
-    successRedirect : '/profile',
-    failureRedirect : '/'
-}))
+               
+           
+        
 
 router.post('/signup',function(req,res){
     var hashedPassword = bcrypt.hashSync(req.body.password)
