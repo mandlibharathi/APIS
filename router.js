@@ -3,7 +3,10 @@ var router=express.Router();
 var jwt=require('jsonwebtoken');
 var bcrypt=require('bcryptjs');
 var passport=require('passport');
-var facebook=require('./models/passport')
+var FacebookStrategy=require('passport-facebook').Strategy
+var configAuth=require('./models/auth')
+var User=require('./schema')
+
 var verifytoken=require('./models/token');
 router.get('/authendication',verifytoken,function(req,res){
         User.findById(req.userid, { password: 0 }, function (err, user) {
@@ -58,24 +61,57 @@ router.post('/login',function(req,res){
     })
 }) 
 
-router.get('/login',verifytoken,function(req,res){
-User.findById(req.userid,function(err,user){
-    if(err){
-        throw err
-    }
-    else{
-        res.send(user)
-    }
-})
-})
+
+passport.serializeUser(function(user, cb) {
+    cb(null, user._id);
+  });
   
-router.get('/auth/facebook',passport.authenticate('facebook',{scope:['public_profile', 'email']}))
-router.get('/auth/facebook/callback',passport.authenticate('facebook',{successRedirect : '/profile',
-failureRedirect : '/'}))
+  passport.deserializeUser(function(id, cb) {
+      User.findById(id,function(user){
+          cb(null,user)
+      })
+    
+  })
+passport.use(new FacebookStrategy({
+    clientID:configAuth.facebookAuth.clientID,
+    clientSecret:configAuth.facebookAuth.clientSecret,
+    callbackURL:configAuth.facebookAuth.callbackURL,
+    profileFields   : configAuth.facebookAuth.profileFields
+},
+function(accessToken,verifyToken,profile,cb){
+   process.nextTick(function(){
+       User.findOne({'facebook.id':profile.id},function(err,user){
+           if(err){
+               return cb(err)
+           }
+           if(user){
+               return cb(null,user)
+           }
+           else{
+            var newUser=new User()
+            newUser.facebook.id    = profile.id;
+            newUser.facebook.token = accessToken;
+            newUser.facebook.name= profile.name.givenName + ' ' + profile.name.familyName;
+            newUser.facebook.email=profile.emails[0].value;
+            newUser.save(function(err){
+                   if(err){
+                       throw err
+                   }
+                   else{
+                       cb(null,newUser)
+                   }
+               })   
+                  
+           }
+       })
+    })
+}))
 
+  
+router.get('/auth/facebook',passport.authenticate('facebook',{scope:['email']}))
+router.get('/auth/facebook/callback',passport.authenticate('facebook',{successRedirect : '/login',
+failureRedirect : '/signup'}))
 
-               
-           
         
 
 router.post('/signup',function(req,res){
@@ -88,7 +124,6 @@ router.post('/signup',function(req,res){
     var firstname=req.body.firstname;
      var lastname=req.body.lastname;
     var countryCode=req.body.countryCode;
-
     var newUser=new User();
     newUser.id=id;
     newUser.phone=phone;
@@ -98,7 +133,6 @@ router.post('/signup',function(req,res){
     newUser.firstname=firstname;
     newUser.lastname=lastname;
     newUser.countryCode=countryCode;
-    
     User.findOne({$or:[{'phone':phone},{'email':email}]},function(err,user){
         if(err){
         res.send(err)
