@@ -1,10 +1,9 @@
 var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
 var userSchema=new Schema({
-   id:{
+  /* id:{
         type:Number
-
-    },
+     },
     phone:{
         type:Number,
         required:true
@@ -28,17 +27,14 @@ var userSchema=new Schema({
     },
     countryCode:{
         type:Number
-    },
-    timestamps:{
-        created_At:Date,
-        Updated_At:Date
-    },
+    },*/
+    
+    
     facebook:{
-        id:String,
+         id:String,
         token:String,
         email:String,
         name:String
-        
     }
     
 })
