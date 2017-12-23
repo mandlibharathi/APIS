@@ -1,20 +1,20 @@
 var mongoose=require('mongoose');
 var Schema=mongoose.Schema;
 var userSchema=new Schema({
-  /* id:{
+  id:{
         type:Number
      },
     phone:{
         type:Number,
-        required:true
+    
     },
     email:{
         type:String,
-        required:true
-    },
+        
+},
     password:{
         type:String,
-        required:true
+        
     },
     role:{
     type:String
@@ -27,7 +27,7 @@ var userSchema=new Schema({
     },
     countryCode:{
         type:Number
-    },*/
+    },
     
     
     facebook:{
@@ -35,6 +35,13 @@ var userSchema=new Schema({
         token:String,
         email:String,
         name:String
+    },
+    google:{
+        id:String,
+        token:String,
+        email:String,
+        name:String
+        
     }
     
 })
