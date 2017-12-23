@@ -64,7 +64,7 @@ router.post('/login',function(req,res){
 
 
 passport.serializeUser(function(user, cb) {
-    cb(null, user._id);
+    cb(null, user);
   });
   
   passport.deserializeUser(function(id, cb) {
@@ -109,14 +109,15 @@ function(accessToken,verifyToken,profile,cb){
 }))
 
   
-router.get('/auth/facebook',passport.authenticate('facebook',{scope:['email']}))
-router.get('/auth/facebook/callback',passport.authenticate('facebook',{successRedirect : '/login',
+router.get('/auth/facebook',passport.authenticate('facebook',{scpoe:['email']}))
+router.get('/auth/facebook/callback',passport.authenticate('facebook',{successRedirect : '/profile',
 failureRedirect : '/'}))
 
 passport.use(new GoogleStrategy({
     clientID:configAuth.googleAuth.clientID,
     clientSecret:configAuth.googleAuth.clientSecret,
     callbackURL:configAuth.googleAuth.callbackURL
+    
 },
 function(accessToken,verifyToken,profile,cb){
    process.nextTick(function(){
@@ -132,7 +133,7 @@ function(accessToken,verifyToken,profile,cb){
             newUser.google.id    = profile.id;
             newUser.google.token = accessToken;
             newUser.google.name= profile.displayName;
-            newUser.google.email=profile.emails[0].value;
+            newUser.google.email=profile.emails[0].value
             newUser.save(function(err){
                    if(err){
                        throw err
@@ -147,11 +148,11 @@ function(accessToken,verifyToken,profile,cb){
     })
 }))
 
-router.get('/auth/google', passport.authenticate('google', {scope: ['profile', 'email']}));
+router.get('/auth/google', passport.authenticate('google',{scope:['profile','email']}));
 
 	router.get('/auth/google/callback', 
 	  passport.authenticate('google', { successRedirect: '/profile',
-	                                      failureRedirect: '/' }))
+	                                      failureRedirect: '/index' }))
 
 router.post('/signup',function(req,res){
     var hashedPassword = bcrypt.hashSync(req.body.password)
