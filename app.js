@@ -7,6 +7,7 @@ var User=require('./schema')
 var passport=require('passport')
 mongoose.connect('mongodb://localhost/Person')
 var db=mongoose.connection
+
 var session=require('express-session')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}))
@@ -19,21 +20,21 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.get('/', function(req, res) {
-            res.render('index.ejs'); 
-        });
+    res.render('index.ejs'); // load the index.ejs file
+});
     
-        app.get('/login',isLoggedIn, function(req, res) {
-                user : req.user 
+        app.get('/profile',isLoggedIn, function(req, res) {
+            res.render('profile.ejs',{
+              user:req.user
             });
-    
+        })
     
         function isLoggedIn(req, res, next) {
-            
-                if (req.isAuthenticated())
+            if (req.isAuthenticated())
                     return next();
                 res.redirect('/');
-            }
-            
+                
+        }
 
 
 
