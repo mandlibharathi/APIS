@@ -21,7 +21,7 @@ router.get('/authendication',verifytoken,function(req,res){
     router.put('/update',verifytoken,function(req,res){
         var firstname=req.body.firstname;
         var lastname=req.body.lastname;
-        User.findByIdAndUpdate(req.userid,{firstname:firstname,lastname:lastname},function(err,user){
+        User.findByIdAndUpdate(req.user.id,{firstname:firstname,lastname:lastname},function(err,user){
            if(err){
                res.status(500).send('there isproblem to find user')
            } 
@@ -51,16 +51,17 @@ router.post('/login',function(req,res){
         if(!user){
             res.json({sucess:false,msg:"user cannot find"})
         }
-        
-        
-            var passwordIsValid = bcrypt.compareSync( req.body.password,user.password) 
-           var token=jwt.sign({id:user._id},'secret') 
-           if(!passwordIsValid){
+        var passwordIsValid=bcrypt.compareSync(user.password,password) 
+        var token=jwt.sign({id:user._id},'secret')  
+    
+          if(!passwordIsValid){
                res.status(401).send({sucess:false,token:null})
            }
-        res.status(200).send({auth:true,token:token})
+           res.status(200).send({auth:true,token:token})
     })
+
 }) 
+
 
 
 passport.serializeUser(function(user, cb) {
@@ -90,6 +91,9 @@ function(accessToken,verifyToken,profile,cb){
            }
            else{
             var newUser=new User()
+
+
+
             newUser.facebook.id    = profile.id;
             newUser.facebook.token = accessToken;
             newUser.facebook.name= profile.name.givenName + ' ' + profile.name.familyName;
@@ -194,11 +198,5 @@ else{
     })
 
 })
-
-   
-
-
-    
-
 
  module.exports=router;                                                                                                                                
